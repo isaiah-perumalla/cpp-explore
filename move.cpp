@@ -35,18 +35,19 @@ void my_func(Tracer&& tracer) {
 
 int main() {
 
-    auto a = Tracer{"A"};
-    auto b = Tracer{"B"};
+    auto a = Tracer{"A"}; //constructed A
+    auto b = Tracer{"B"}; // constructed B 
 
-    auto a_copy = a;
+    auto a_copy = a; // copy constructor A 
     // not move constructor defined so will call copy constructor
-    auto c = std::move(a);
+    
+    auto c = std::move(a); // move constructor A
 
-    my_func(b);
-    my_func(a); // a is moved from state obj a.name it is null
-    my_func(std::move(b)); // moved version of func will be called
+    my_func(b); //pass by ref my_func called B
+    my_func(a); // pass by ref my_func called (null) , a is moved from state obj a.name it is null
+    my_func(std::move(b)); // moved param my_func called B , moved version of func will be called
 
-    my_func(b); //b is now moved from state and b.name be null
+    my_func(b); //pass by ref my_func called B 
     return 0;
     
 }
@@ -56,11 +57,19 @@ int main() {
 
 /*
 output
-constructed A 
+
+
+constructed A  
+constructed B 
 copy constructor A 
 move constructor A 
+pass by ref my_func called B 
+pass by ref my_func called (null) 
+moved param my_func called B 
+pass by ref my_func called B 
 destroyed A 
 destroyed A 
+destroyed B 
 destroyed (null) 
 
 */
