@@ -24,11 +24,19 @@ struct Tracer {
 
 };
 
+
+//depending on call site lvalue or rvalue either copy or move constructor is called 
+void my_func_val(Tracer tracer) {
+    printf("pass by value  my_func_val called %s \n", tracer.name);
+}
+
 void my_func(Tracer& tracer) {
     printf("pass by ref my_func called %s \n", tracer.name);
 }
 
+//wont call the move consturctor 
 void my_func(Tracer&& tracer) {
+    
     printf("moved param my_func called %s \n", tracer.name);
 }
 
@@ -46,8 +54,8 @@ int main() {
     my_func(b); //pass by ref my_func called B
     my_func(a); // pass by ref my_func called (null) , a is moved from state obj a.name it is null
     my_func(std::move(b)); // moved param my_func called B , moved version of func will be called
-
-    my_func(b); //pass by ref my_func called B 
+    my_func_val(std::move(b)); // move constructor B called
+    my_func(b); //pass by ref my_func called B , b.name is null as it is moved from state
     return 0;
     
 }
@@ -59,17 +67,19 @@ int main() {
 output
 
 
-constructed A  
+constructed A 
 constructed B 
 copy constructor A 
 move constructor A 
 pass by ref my_func called B 
 pass by ref my_func called (null) 
 moved param my_func called B 
-pass by ref my_func called B 
-destroyed A 
-destroyed A 
+move constructor B 
+pass by value  my_func_val called B 
 destroyed B 
+pass by ref my_func called (null) 
+destroyed A 
+destroyed A 
 destroyed (null) 
-
+destroyed (null) 
 */
